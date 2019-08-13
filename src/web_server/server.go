@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"model"
 
 	// "os"
 
@@ -24,6 +25,7 @@ func (s *Server) Start() {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/", rootHandler).Methods("GET")
+	router.HandleFunc("/create", createHandler).Methods("GET")
 
 	http.Handle("/", router)
 
@@ -33,5 +35,19 @@ func (s *Server) Start() {
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Root!\n"))
+	w.Write([]byte("All!\n"))
+	users, err := model.FindAll()
+	if err != nil {
+		fmt.Println("Find all error: %s", err)
+	}
+	fmt.Println("Users: %s", users)
+}
+
+func createHandler(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Create!\n"))
+	user, err := model.Create("Test")
+	if err != nil {
+		fmt.Println("Create user error: %s", err)
+	}
+	fmt.Println("User: %s", user)
 }
